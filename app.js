@@ -1,5 +1,6 @@
 document.querySelector('#loan-form').addEventListener('submit', delayCalculate);
 
+
 function delayCalculate(e) {
   e.preventDefault();
   document.querySelector('#loading').style.display = 'block';
@@ -25,13 +26,16 @@ function calculateResults() {
   // Compute all payment
   const x = Math.pow(1 + calculatedInterest, calculatedPayments);
   const monthly = (principal * x * calculatedInterest) / (x - 1);
+  
+  const monthlyConvert = convert_rupiah(Math.floor(monthly))
+  const totalPay = convert_rupiah(Math.floor((monthly * calculatedPayments)))
+  const totalInt = convert_rupiah(Math.floor(((monthly * calculatedPayments) - principal)))
 
   if (isFinite(monthly)) {
     document.querySelector('#results').style.display = 'block';
-    monthlyPayment.value = monthly.toFixed(2);
-    totalPayment.value = (monthly * calculatedPayments).toFixed(2);
-    totalnterest.value = ((monthly * calculatedPayments) - principal).toFixed(2);
-    
+    monthlyPayment.value = monthlyConvert
+    totalPayment.value = totalPay
+    totalnterest.value = totalInt
     document.querySelector('#loading').style.display = 'none';
   } else {
     console.log('error');
@@ -57,4 +61,19 @@ function showError(error) {
 
 function clearError() {
   document.querySelector('.alert').remove();
+}
+
+function convert_rupiah(angka) {
+  var	number_string = angka.toString(),
+  sisa 	= number_string.length % 3,
+  rupiah 	= number_string.substr(0, sisa),
+  ribuan 	= number_string.substr(sisa).match(/\d{3}/g);
+
+  if (ribuan) {
+      separator = sisa ? ',' : '';
+      rupiah += separator + ribuan.join(',');
+  }
+
+  return rupiah;
+
 }
